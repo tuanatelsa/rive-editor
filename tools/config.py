@@ -43,6 +43,25 @@ class StateMachineSettings:
 
 
 @dataclass
+class Cannon:
+    at: tuple
+    angle: float
+
+
+@dataclass
+class ConfettiSettings:
+    moods: list
+    seed: int
+    pieces: int
+    duration: int
+    life: tuple
+    speed: float
+    spread: float
+    cannons: list
+    colors: list
+
+
+@dataclass
 class Character:
     name: str
     directory: Path
@@ -52,6 +71,7 @@ class Character:
     rig: dict
     moods: list
     state_machine: StateMachineSettings
+    confetti: ConfettiSettings | None
 
 
 def point(value):
@@ -85,6 +105,28 @@ def parse_mood(raw, landmarks):
     return Mood(raw["name"], int(raw["duration"]), expression, bone_offsets)
 
 
+def parse_confetti(raw, mood_names):
+    if raw is None:
+        return None
+    unknown = set(raw["moods"]) - mood_names
+    if unknown:
+        raise ValueError(f"confetti.moods names no mood: {sorted(unknown)}")
+    life = (int(raw["life"][0]), int(raw["life"][1]))
+    if life[1] > int(raw["duration"]):
+        raise ValueError("confetti.life must end within confetti.duration")
+    return ConfettiSettings(
+        moods=list(raw["moods"]),
+        seed=int(raw["seed"]),
+        pieces=int(raw["pieces"]),
+        duration=int(raw["duration"]),
+        life=life,
+        speed=float(raw["speed"]),
+        spread=float(raw["spread"]),
+        cannons=[Cannon(point(c["at"]), float(c["angle"])) for c in raw["cannons"]],
+        colors=list(raw["colors"]),
+    )
+
+
 def load_character(directory):
     directory = Path(directory)
     raw = tomllib.loads((directory / "character.toml").read_text())
@@ -102,4 +144,5 @@ def load_character(directory):
         rig=parse_rig(raw["rig"]),
         moods=moods,
         state_machine=machine,
+        confetti=parse_confetti(raw.get("confetti"), {m.name for m in moods}),
     )

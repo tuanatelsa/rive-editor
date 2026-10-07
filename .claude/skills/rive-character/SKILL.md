@@ -96,6 +96,24 @@ Start values that work:
 
 Set `state_machine.default` to the mood that plays first.
 
+### Confetti
+
+To add a confetti burst to one or more moods, add a `[confetti]` table. Copy it from `characters/meiling/character.toml`.
+
+| Key | Meaning |
+|---|---|
+| `moods` | moods that show the confetti |
+| `seed` | random seed; the same seed gives the same burst |
+| `pieces` | number of pieces |
+| `duration` | frames of one burst loop, separate from the mood duration |
+| `life` | minimum and maximum frames that one piece lives; the maximum must not exceed `duration` |
+| `speed` | launch speed in pixels per frame; each piece gets 50% to 100% of it |
+| `spread` | launch cone in degrees |
+| `cannons` | launch points in image coordinates and the angle in degrees; 90 points up |
+| `colors` | `AARRGGBB` colours |
+
+The confetti plays on its own state machine layer, `Confetti`. It restarts each time a listed mood starts. It fades out in `transition_ms` when the mood changes.
+
 ## Step 5: Build and check
 
 Do all of these steps after every change:

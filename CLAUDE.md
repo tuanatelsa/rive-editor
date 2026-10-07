@@ -18,6 +18,7 @@ For a new character or a mood change, use the `rive-character` skill in `.claude
 | `tools/mesh.py` | triangulates the PNG |
 | `tools/rig.py` | six bones and the per-vertex bone weights |
 | `tools/expression.py` | Gaussian face offsets |
+| `tools/confetti.py` | confetti burst simulation, baked to keyframes |
 | `tools/rml.py` | RML writer |
 | `tools/grid.py` | grid overlay to measure landmarks |
 | `tools/preview.py` | renders every mood to one contact sheet |

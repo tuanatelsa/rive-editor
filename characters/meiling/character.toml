@@ -136,3 +136,17 @@ expression = [
 "ForearmL.rotation" = [[0, 1.55], [20, 1.35], [40, 1.55]]
 "UpperArmR.rotation" = [[0, -0.55], [20, -0.65], [40, -0.55]]
 "ForearmR.rotation" = [[0, -1.55], [20, -1.35], [40, -1.55]]
+
+[confetti]
+moods = ["cheer"]
+seed = 7
+pieces = 140
+duration = 240
+life = [160, 230]
+speed = 140
+spread = 50
+cannons = [
+    { at = [-220, 1260], angle = 65 },
+    { at = [1137, 1260], angle = 115 },
+]
+colors = ["FFFFC94D", "FFFF6B9D", "FF4FC3F7", "FF6EE7B7", "FFB794F6", "FFFF8A65"]

@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image
 
 from config import BONE_PROPERTIES, load_character
+from confetti import build_pieces
 from expression import displacement
 from mesh import build_mesh
 from rig import bone_weights, pack_weights, skeleton
@@ -15,6 +16,8 @@ KEYED_VERTEX_THRESHOLD = 0.05
 VERTEX_X_KEY = 24
 VERTEX_Y_KEY = 25
 ENUM_PROPERTY_KEY = 637
+CONFETTI_PROPERTIES = ("x", "y", "rotation", "scaleY", "opacity")
+PIECE_TRACKS = ("x", "y", "rotation", "scale_y", "opacity")
 
 
 class Scene:
@@ -175,7 +178,96 @@ class Scene:
             name="Mood",
             id=self.ids.new(),
         )
-        return element("StateMachine", [layer], name="Mood Machine", id=self.machine_id)
+        layers = [layer, self.confetti_layer()] if self.character.confetti else [layer]
+        return element("StateMachine", layers, name="Mood Machine", id=self.machine_id)
+
+    def confetti_layer(self):
+        settings = self.character.confetti
+        other_moods = [m.name for m in self.character.moods if m.name not in settings.moods]
+        hidden = element(
+            "AnimationState",
+            [
+                element("StateTransition", [self.mood_condition(name)], stateToId=self.confetti_state_ids["burst"])
+                for name in settings.moods
+            ],
+            x=160,
+            y=120,
+            animationId=self.confetti_anim_ids["hidden"],
+            id=self.confetti_state_ids["hidden"],
+        )
+        burst = element(
+            "AnimationState",
+            [
+                element(
+                    "StateTransition",
+                    [self.mood_condition(name)],
+                    stateToId=self.confetti_state_ids["hidden"],
+                    duration=self.character.state_machine.transition_ms,
+                )
+                for name in other_moods
+            ],
+            x=380,
+            y=120,
+            reset="true",
+            animationId=self.confetti_anim_ids["burst"],
+            id=self.confetti_state_ids["burst"],
+        )
+        entry = element("StateTransition", stateToId=self.confetti_state_ids["hidden"])
+        return element(
+            "StateMachineLayer",
+            [
+                element("AnyState", x=160, y=-120),
+                element("ExitState", x=600, y=-120),
+                element("EntryState", [entry], x=380, y=-120),
+                hidden,
+                burst,
+            ],
+            name="Confetti",
+            id=self.ids.new(),
+        )
+
+    def confetti_group(self, name, node_id, pieces):
+        shapes = []
+        for piece, shape_id in pieces:
+            fill = element("Fill", [element("SolidColor", colorValue=piece.color, name="Color")], name="Fill")
+            geometry = element(piece.shape, width=piece.width, height=piece.height, name="Path")
+            shapes.append(
+                element(
+                    "Shape",
+                    [geometry, fill],
+                    x=float(piece.x[0][1]),
+                    y=float(piece.y[0][1]),
+                    rotation=float(piece.rotation[0][1]),
+                    scaleY=float(piece.scale_y[0][1]),
+                    opacity=float(piece.opacity[0][1]),
+                    name="Piece",
+                    id=shape_id,
+                )
+            )
+        return element("Node", shapes, opacity=0.0, name=name, id=node_id)
+
+    def confetti_animations(self, pieces):
+        groups = [self.confetti_node_ids["front"], self.confetti_node_ids["back"]]
+        hidden = element(
+            "LinearAnimation",
+            [keyed(node, [("property", "opacity", [(0, 0.0)])], held_keyframe) for node in groups],
+            duration=1,
+            name="confetti_hidden",
+            id=self.confetti_anim_ids["hidden"],
+        )
+        objects = [keyed(node, [("property", "opacity", [(0, 1.0)])], held_keyframe) for node in groups]
+        for piece, shape_id in pieces:
+            tracks = [("property", prop, getattr(piece, attr)) for prop, attr in zip(CONFETTI_PROPERTIES, PIECE_TRACKS)]
+            objects.append(keyed(shape_id, tracks, held_keyframe))
+        burst = element(
+            "LinearAnimation",
+            objects,
+            loopValue="loop",
+            duration=self.character.confetti.duration,
+            name="confetti_burst",
+            id=self.confetti_anim_ids["burst"],
+        )
+        return [hidden, burst]
 
     def find_keyed_vertices(self):
         points = self.mesh.points
@@ -204,6 +296,17 @@ class Scene:
         self.vertex_ids = {index: ids.new() for index in self.keyed_vertices}
         self.mood_path = f"{view_model_id}-{property_id}"
         weights = bone_weights(mesh.points, self.bones, character.rig)
+        confetti_front, confetti_back, confetti_animations = [], [], []
+        if character.confetti:
+            self.confetti_node_ids = {"front": ids.new(), "back": ids.new()}
+            self.confetti_anim_ids = {"hidden": ids.new(), "burst": ids.new()}
+            self.confetti_state_ids = {"hidden": ids.new(), "burst": ids.new()}
+            pieces = [(piece, ids.new()) for piece in build_pieces(character.confetti, self.to_world)]
+            front = [(p, i) for p, i in pieces if not p.behind]
+            back = [(p, i) for p, i in pieces if p.behind]
+            confetti_front = [self.confetti_group("Confetti Front", self.confetti_node_ids["front"], front)]
+            confetti_back = [self.confetti_group("Confetti Back", self.confetti_node_ids["back"], back)]
+            confetti_animations = self.confetti_animations(pieces)
 
         image = element(
             "Image",
@@ -222,10 +325,13 @@ class Scene:
             [
                 element("LayoutComponentStyle", name="Artboard Style", id=style_id),
                 element("Fill", [background], name="Background"),
+                *confetti_front,
                 image,
+                *confetti_back,
                 self.bone_element(self.bones[0]),
                 self.state_machine(),
                 *[self.mood_element(mood) for mood in moods],
+                *confetti_animations,
             ],
             defaultStateMachineId=self.machine_id,
             viewModelId=view_model_id,
