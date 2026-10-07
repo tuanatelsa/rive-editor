@@ -4,6 +4,8 @@ Generate an animated Rive file from one static character PNG, with Claude Code a
 
 ![Meiling moods](docs/meiling-preview.png)
 
+[Watch live animation](https://www.rive.best/?share=80rmukr9vl)
+
 ## Setup
 
 ```bash
