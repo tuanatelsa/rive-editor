@@ -3,7 +3,8 @@
 This repository turns a static character PNG into an animated Rive file (`.riv`) with the Rive CLI.
 A teammate gives an image and a list of moods. Claude writes a character config, generates the scene, checks it and returns the `.riv`.
 
-For a new character or a mood change, use the `rive-character` skill in `.claude/skills/rive-character/SKILL.md`.
+For a new character or a mood change, read `.claude/skills/rive-character/SKILL.md` before you start, then follow it.
+This rule applies also when the Claude session starts outside this repository.
 
 ## Layout
 
@@ -26,9 +27,12 @@ For a new character or a mood change, use the `rive-character` skill in `.claude
 
 ## Setup
 
-1. Install the Rive CLI: `brew install --cask rive-app/tap/rive-cli`.
-2. Install `uv`, then run `uv sync`.
-3. Run `rive doctor`. The `auth` warning does not block local builds.
+The setup needs macOS and Homebrew. The tools are tested with `rive 1.4.0`.
+
+1. If `rive` is missing, run `brew install --cask rive-app/tap/rive-cli`.
+2. If `uv` is missing, run `brew install uv`.
+3. Run `uv sync`.
+4. Run `rive doctor`. The `auth` warning does not block local builds.
 
 ## Rules
 

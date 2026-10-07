@@ -8,6 +8,8 @@ Generate an animated Rive file from one static character PNG, with Claude Code a
 
 ## Setup
 
+Needs macOS and Homebrew. Tested with `rive 1.4.0`.
+
 ```bash
 git clone https://github.com/tuanatelsa/rive-editor.git
 cd rive-editor
@@ -17,6 +19,18 @@ rive doctor
 ```
 
 ## Use it with Claude Code
+
+Paste this into Claude Code:
+
+```text
+Clone https://github.com/tuanatelsa/rive-editor, follow its CLAUDE.md, and make a Rive character from <path to your PNG> with moods <your moods or poses>.
+```
+
+Replace `<path to your PNG>` with the path to the image on your machine. Replace `<your moods or poses>` with any states, for example `happy, sad, wave, dance`.
+
+Claude installs the tools, rigs the character, checks the result and gives you the `.riv` path.
+
+To work inside a clone:
 
 1. Put your PNG in the repository or note its path. The PNG needs a transparent background.
 2. Start Claude Code in the repository root: `claude`.
