@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rive:*)",
+      "Bash(uv run python:*)",
+      "Bash(uv sync:*)"
+    ],
+    "deny": [
+      "Bash(rive push:*)",
+      "Bash(rive pull:*)",
+      "Bash(rive login:*)"
+    ]
+  }
+}

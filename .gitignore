@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+.scratch/
+.DS_Store
+characters/*/build/
+characters/*/scene.rml

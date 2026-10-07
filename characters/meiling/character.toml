@@ -1,0 +1,138 @@
+name = "meiling"
+image = "meiling.png"
+
+[canvas]
+pad_x = 260
+pad_top = 200
+pad_bottom = -60
+background = "FF282828"
+
+[mesh]
+base_step = 16
+fine_step = 6
+fine_regions = [[320, 205, 600, 445]]
+
+[rig]
+hip = [455, 1100]
+neck = [455, 530]
+crown = [455, 250]
+shoulder_left = [300, 610]
+elbow_left = [190, 865]
+wrist_left = [105, 1080]
+mirror_x = 910
+side_boundary_left = [
+    [345, 540],
+    [325, 610],
+    [313, 667],
+    [302, 800],
+    [305, 880],
+    [300, 920],
+    [285, 960],
+    [270, 1000],
+    [250, 1040],
+    [228, 1080],
+    [215, 1120],
+    [190, 1200],
+    [185, 1326],
+]
+side_softness = 10
+shoulder_ramp = [555, 625]
+elbow_blend = [0.82, 1.08]
+head_ramp_center = [480, 545]
+head_ramp_side = [525, 575]
+head_side_x = [110, 170]
+
+[landmarks]
+mouth_left = [398, 389]
+mouth_right = [510, 392]
+mouth_center = [450, 400]
+lower_lip = [450, 408]
+cheek_left = [370, 375]
+cheek_right = [535, 372]
+lower_lid_left = [385, 326]
+lower_lid_right = [525, 323]
+upper_lid_left = [385, 262]
+upper_lid_right = [525, 262]
+brow_inner_left = [410, 236]
+brow_inner_right = [502, 236]
+brow_outer_left = [342, 240]
+brow_outer_right = [572, 238]
+brow_left = [375, 236]
+brow_right = [540, 235]
+
+[state_machine]
+property = "mood"
+default = "smiling"
+transition_ms = 250
+
+[[moods]]
+name = "smiling"
+duration = 120
+expression = [
+    { at = "mouth_left", offset = [-3, -7], radius = 10 },
+    { at = "mouth_right", offset = [3, -7], radius = 10 },
+    { at = "mouth_center", offset = [0, 2], radius = 12 },
+    { at = "cheek_left", offset = [0, -4], radius = 22 },
+    { at = "cheek_right", offset = [0, -4], radius = 22 },
+    { at = "lower_lid_left", offset = [0, -3], radius = 14 },
+    { at = "lower_lid_right", offset = [0, -3], radius = 14 },
+    { at = "brow_left", offset = [0, -2], radius = 30 },
+    { at = "brow_right", offset = [0, -2], radius = 30 },
+]
+[moods.bones]
+"Root.y" = [[0, 0], [60, -4], [120, 0]]
+"Root.rotation" = [[0, 0]]
+"Head.rotation" = [[0, -0.05], [60, 0.05], [120, -0.05]]
+"UpperArmL.rotation" = [[0, 0], [60, 0.03], [120, 0]]
+"ForearmL.rotation" = [[0, 0]]
+"UpperArmR.rotation" = [[0, 0], [60, -0.03], [120, 0]]
+"ForearmR.rotation" = [[0, 0]]
+
+[[moods]]
+name = "sad"
+duration = 180
+expression = [
+    { at = "mouth_left", offset = [3, 15], radius = 13 },
+    { at = "mouth_right", offset = [-3, 13], radius = 13 },
+    { at = "mouth_center", offset = [0, -5], radius = 16 },
+    { at = "cheek_left", offset = [0, 3], radius = 22 },
+    { at = "cheek_right", offset = [0, 3], radius = 22 },
+    { at = "upper_lid_left", offset = [0, 4], radius = 14 },
+    { at = "upper_lid_right", offset = [0, 4], radius = 14 },
+    { at = "brow_inner_left", offset = [2, -10], radius = 16 },
+    { at = "brow_inner_right", offset = [-2, -10], radius = 16 },
+    { at = "brow_outer_left", offset = [0, 4], radius = 18 },
+    { at = "brow_outer_right", offset = [0, 4], radius = 18 },
+]
+[moods.bones]
+"Root.y" = [[0, 8], [90, 11], [180, 8]]
+"Root.rotation" = [[0, -0.01], [90, 0.01], [180, -0.01]]
+"Head.rotation" = [[0, 0.10], [90, 0.13], [180, 0.10]]
+"UpperArmL.rotation" = [[0, -0.06]]
+"ForearmL.rotation" = [[0, -0.04]]
+"UpperArmR.rotation" = [[0, 0.06]]
+"ForearmR.rotation" = [[0, 0.04]]
+
+[[moods]]
+name = "cheer"
+duration = 40
+expression = [
+    { at = "mouth_left", offset = [-5, -11], radius = 11 },
+    { at = "mouth_right", offset = [5, -11], radius = 11 },
+    { at = "mouth_center", offset = [0, 4], radius = 14 },
+    { at = "lower_lip", offset = [0, 5], radius = 10 },
+    { at = "cheek_left", offset = [0, -6], radius = 22 },
+    { at = "cheek_right", offset = [0, -6], radius = 22 },
+    { at = "lower_lid_left", offset = [0, -4], radius = 14 },
+    { at = "lower_lid_right", offset = [0, -4], radius = 14 },
+    { at = "brow_left", offset = [0, -8], radius = 30 },
+    { at = "brow_right", offset = [0, -8], radius = 30 },
+]
+[moods.bones]
+"Root.y" = [[0, 0], [20, -45], [40, 0]]
+"Root.rotation" = [[0, 0]]
+"Head.rotation" = [[0, -0.06], [20, 0.06], [40, -0.06]]
+"UpperArmL.rotation" = [[0, 0.55], [20, 0.65], [40, 0.55]]
+"ForearmL.rotation" = [[0, 1.55], [20, 1.35], [40, 1.55]]
+"UpperArmR.rotation" = [[0, -0.55], [20, -0.65], [40, -0.55]]
+"ForearmR.rotation" = [[0, -1.55], [20, -1.35], [40, -1.55]]
